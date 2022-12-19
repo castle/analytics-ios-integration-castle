@@ -1,14 +1,8 @@
 //
-//  ExampleDestination.swift
-//  ExampleDestination
+//  CastleDestination.swift
+//  CastleDestination
 //
-//  Created by Cody Garvin on 9/13/21.
-//
-
-// NOTE: You can see this plugin in use in the DestinationsExample application.
-//
-// This plugin is NOT SUPPORTED by Segment.  It is here merely as an example,
-// and for your convenience should you find it useful.
+//  Created by Alexander Simson on 2022-12-19.
 //
 
 // MIT License
@@ -35,20 +29,20 @@
 
 import Foundation
 import Segment
-//import ExampleModule // TODO: Import partner SDK module here
+import Castle
 
 /**
  An implementation of the Example Analytics device mode destination as a plugin.
  */
 
-public class ExampleDestination: DestinationPlugin {
+public class CastleDestination: DestinationPlugin {
     public let timeline = Timeline()
     public let type = PluginType.destination
     // TODO: Fill this out with your settings key that matches your destination in the Segment App
-    public let key = "Example"
+    public let key = "Castle"
     public var analytics: Analytics? = nil
     
-    private var exampleSettings: ExampleSettings?
+    private var castleSettings: CastleSettings?
         
     public init() { }
 
@@ -58,8 +52,8 @@ public class ExampleDestination: DestinationPlugin {
         
         // Grab the settings and assign them for potential later usage.
         // Note: Since integrationSettings is generic, strongly type the variable.
-        guard let tempSettings: ExampleSettings = settings.integrationSettings(forPlugin: self) else { return }
-        exampleSettings = tempSettings
+        guard let tempSettings: CastleSettings = settings.integrationSettings(forPlugin: self) else { return }
+        castleSettings = tempSettings
         
         // TODO: initialize partner SDK here
     }
@@ -80,8 +74,8 @@ public class ExampleDestination: DestinationPlugin {
         var returnEvent = event
         
         // !!!: Sample of how to convert property keys
-        if let mappedProperties = try? event.properties?.mapTransform(ExampleDestination.eventNameMap,
-                                                                      valueTransform: ExampleDestination.eventValueConversion) {
+        if let mappedProperties = try? event.properties?.mapTransform(CastleDestination.eventNameMap,
+                                                                      valueTransform: CastleDestination.eventValueConversion) {
             returnEvent.properties = mappedProperties
         }
                 
@@ -125,14 +119,14 @@ public class ExampleDestination: DestinationPlugin {
 }
 
 // Example of versioning for your plugin
-extension ExampleDestination: VersionedPlugin {
+extension CastleDestination: VersionedPlugin {
     public static func version() -> String {
         return __destination_version
     }
 }
 
 // Example of what settings may look like.
-private struct ExampleSettings: Codable {
+private struct CastleSettings: Codable {
     let apiKey: String
     let configB: Int?
     let configC: Bool?
@@ -140,7 +134,7 @@ private struct ExampleSettings: Codable {
 
 // Rules for converting keys and values to the proper formats that bridge
 // from Segment to the Partner SDK. These are only examples.
-private extension ExampleDestination {
+private extension CastleDestination {
     
     static var eventNameMap = ["ADD_TO_CART": "Product Added",
                                "PRODUCT_TAPPED": "Product Tapped"]

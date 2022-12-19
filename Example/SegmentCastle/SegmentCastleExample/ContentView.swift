@@ -1,8 +1,8 @@
 //
 //  ContentView.swift
-//  BasicExample
+//  CastleExample
 //
-//  Created by Brandon Sneed on 2/23/22.
+//  Created by Alexander Simson 2022-12-19.
 //
 
 import SwiftUI

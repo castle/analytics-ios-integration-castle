@@ -1,13 +1,13 @@
 //
-//  BasicExampleUITestsLaunchTests.swift
-//  BasicExampleUITests
+//  CastleExampleUITestsLaunchTests.swift
+//  CastleExampleUITests
 //
-//  Created by Brandon Sneed on 2/23/22.
+//  Created by Alexander Simson on 2022-12-19.
 //
 
 import XCTest
 
-class BasicExampleUITestsLaunchTests: XCTestCase {
+class CastleExampleUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

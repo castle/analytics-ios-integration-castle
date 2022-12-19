@@ -1,14 +1,14 @@
 //
-//  BasicExampleTests.swift
-//  BasicExampleTests
+//  CastleExampleTests.swift
+//  CastleExample
 //
-//  Created by Brandon Sneed on 2/23/22.
+//  Created by Alexander Simson 2022-12-19.
 //
 
 import XCTest
-@testable import BasicExample
+@testable import SegmentCastle
 
-class BasicExampleTests: XCTestCase {
+class CastleExampleTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

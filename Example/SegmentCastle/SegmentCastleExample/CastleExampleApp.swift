@@ -1,15 +1,16 @@
 //
-//  BasicExampleApp.swift
-//  BasicExample
+//  CastleExampleApp.swift
+//  CastleExample
 //
-//  Created by Brandon Sneed on 2/23/22.
+//  Created by Alexander Simson on 2022-12-19.
 //
 
 import SwiftUI
 import Segment
+import SegmentCastle
 
 @main
-struct BasicExampleApp: App {
+struct CastleExampleApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -22,7 +23,7 @@ extension Analytics {
         let analytics = Analytics(configuration: Configuration(writeKey: "<YOUR WRITE KEY>")
                     .flushAt(3)
                     .trackApplicationLifecycleEvents(true))
-        //analytics.add(plugin: <Destination>())
+        analytics.add(plugin: CastleDestination())
         return analytics
     }
 }
