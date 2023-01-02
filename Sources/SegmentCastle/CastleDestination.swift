@@ -38,7 +38,6 @@ import Castle
 public class CastleDestination: DestinationPlugin {
     public let timeline = Timeline()
     public let type = PluginType.destination
-    // TODO: Fill this out with your settings key that matches your destination in the Segment App
     public let key = "Castle"
     public var analytics: Analytics? = nil
     
@@ -55,7 +54,11 @@ public class CastleDestination: DestinationPlugin {
         guard let tempSettings: CastleSettings = settings.integrationSettings(forPlugin: self) else { return }
         castleSettings = tempSettings
         
-        // TODO: initialize partner SDK here
+        let configuration = CastleConfiguration(publishableKey: castleSettings!.publishableKey)
+        configuration.isDebugLoggingEnabled = true
+        Castle.configure(configuration)
+        
+        Castle.userJwt("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVjMjQ0ZjMwLTM0MzItNGJiYy04OGYxLTFlM2ZjMDFiYzFmZSIsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJlZ2lzdGVyZWRfYXQiOiIyMDIyLTAxLTAxVDA5OjA2OjE0LjgwM1oifQ.eAwehcXZDBBrJClaE0bkO9XAr4U3vqKUpyZ-d3SxnH0")
     }
     
     public func identify(event: IdentifyEvent) -> IdentifyEvent? {
@@ -80,6 +83,7 @@ public class CastleDestination: DestinationPlugin {
         }
                 
         // TODO: Do something with event & properties in partner SDK from returnEvent
+        Castle.custom(name: returnEvent.event)
         
         return returnEvent
     }
@@ -91,30 +95,23 @@ public class CastleDestination: DestinationPlugin {
         }
 
         // TODO: Do something with name, category & properties in partner SDK
+        if let name = event.name {
+            Castle.screen(name: name)
+        }
         
         return event
     }
     
     public func group(event: GroupEvent) -> GroupEvent? {
-        
-        if let _ = event.traits?.dictionaryValue {
-            // TODO: Do something with traits if they exist
-        }
-        
-        // TODO: Do something with groupId & traits in partner SDK
-        
         return event
     }
     
     public func alias(event: AliasEvent) -> AliasEvent? {
-        
-        // TODO: Do something with previousId & userId in partner SDK
-        
         return event
     }
     
     public func reset() {
-        // TODO: Do something with resetting partner SDK
+        Castle.reset()
     }
 }
 
@@ -127,9 +124,7 @@ extension CastleDestination: VersionedPlugin {
 
 // Example of what settings may look like.
 private struct CastleSettings: Codable {
-    let apiKey: String
-    let configB: Int?
-    let configC: Bool?
+    let publishableKey: String
 }
 
 // Rules for converting keys and values to the proper formats that bridge

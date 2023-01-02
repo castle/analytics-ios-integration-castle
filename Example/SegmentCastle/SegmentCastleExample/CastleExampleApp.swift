@@ -20,10 +20,15 @@ struct CastleExampleApp: App {
 
 extension Analytics {
     static var main: Analytics {
-        let analytics = Analytics(configuration: Configuration(writeKey: "<YOUR WRITE KEY>")
+        Analytics.debugLogsEnabled = true
+        
+        let analytics = Analytics(configuration: Configuration(writeKey: "v3KSj7rwRNcE54vcZj5f3EQ6JUODhCIS")
                     .flushAt(3)
-                    .trackApplicationLifecycleEvents(true))
+                    .trackApplicationLifecycleEvents(true)
+                    .autoAddSegmentDestination(true))
+        
         analytics.add(plugin: CastleDestination())
+        
         return analytics
     }
 }
