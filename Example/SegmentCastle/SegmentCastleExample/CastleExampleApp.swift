@@ -27,8 +27,7 @@ extension Analytics {
                     .trackApplicationLifecycleEvents(true)
                     .autoAddSegmentDestination(true))
         
-        analytics.add(plugin: CastleDestination())
-        
+        analytics.add(plugin: CastleDestination(userJwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVjMjQ0ZjMwLTM0MzItNGJiYy04OGYxLTFlM2ZjMDFiYzFmZSIsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJlZ2lzdGVyZWRfYXQiOiIyMDIyLTAxLTAxVDA5OjA2OjE0LjgwM1oifQ.eAwehcXZDBBrJClaE0bkO9XAr4U3vqKUpyZ-d3SxnH0"))
         return analytics
     }
 }

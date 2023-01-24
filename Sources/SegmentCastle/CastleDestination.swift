@@ -42,8 +42,11 @@ public class CastleDestination: DestinationPlugin {
     public var analytics: Analytics? = nil
     
     private var castleSettings: CastleSettings?
+    private var userJwt: String
         
-    public init() { }
+    public init(userJwt: String) {
+        self.userJwt = userJwt
+    }
 
     public func update(settings: Settings, type: UpdateType) {
         // Skip if you have a singleton and don't want to keep updating via settings.
@@ -58,7 +61,7 @@ public class CastleDestination: DestinationPlugin {
         configuration.isDebugLoggingEnabled = true
         Castle.configure(configuration)
         
-        Castle.userJwt("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVjMjQ0ZjMwLTM0MzItNGJiYy04OGYxLTFlM2ZjMDFiYzFmZSIsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJlZ2lzdGVyZWRfYXQiOiIyMDIyLTAxLTAxVDA5OjA2OjE0LjgwM1oifQ.eAwehcXZDBBrJClaE0bkO9XAr4U3vqKUpyZ-d3SxnH0")
+        Castle.userJwt(userJwt)
     }
     
     public func identify(event: IdentifyEvent) -> IdentifyEvent? {
