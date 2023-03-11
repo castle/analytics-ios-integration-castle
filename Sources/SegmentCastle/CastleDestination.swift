@@ -54,7 +54,11 @@ public class CastleDestination: DestinationPlugin {
         
         // Grab the settings and assign them for potential later usage.
         // Note: Since integrationSettings is generic, strongly type the variable.
-        guard let tempSettings: CastleSettings = settings.integrationSettings(forPlugin: self) else { return }
+        guard let tempSettings: CastleSettings = settings.integrationSettings(forPlugin: self) else {
+            analytics?.log(message: "Could not load Castle settings")
+            return
+        }
+        
         castleSettings = tempSettings
         
         let configuration = CastleConfiguration(publishableKey: castleSettings!.publishableKey)
@@ -65,43 +69,20 @@ public class CastleDestination: DestinationPlugin {
     }
     
     public func identify(event: IdentifyEvent) -> IdentifyEvent? {
-        
-        if let _ = event.traits?.dictionaryValue {
-            // TODO: Do something with traits if they exist
-        }
-        
-        // TODO: Do something with userId & traits in partner SDK
-        
+        // Since we don't have a corresponding event we won't do anything here
         return event
     }
     
     public func track(event: TrackEvent) -> TrackEvent? {
-        
-        var returnEvent = event
-        
-        // !!!: Sample of how to convert property keys
-        if let mappedProperties = try? event.properties?.mapTransform(CastleDestination.eventNameMap,
-                                                                      valueTransform: CastleDestination.eventValueConversion) {
-            returnEvent.properties = mappedProperties
-        }
-                
-        // TODO: Do something with event & properties in partner SDK from returnEvent
-        Castle.custom(name: returnEvent.event)
-        
-        return returnEvent
+        let properties = filteredProperties(properties: event.properties?.dictionaryValue)
+        Castle.custom(name: event.event, properties: properties)
+        return event
     }
     
     public func screen(event: ScreenEvent) -> ScreenEvent? {
-        
-        if let _ = event.properties?.dictionaryValue {
-            // TODO: Do something with properties if they exist
-        }
-
-        // TODO: Do something with name, category & properties in partner SDK
         if let name = event.name {
             Castle.screen(name: name)
         }
-        
         return event
     }
     
@@ -118,14 +99,14 @@ public class CastleDestination: DestinationPlugin {
     }
 }
 
-// Example of versioning for your plugin
+/// Versioning
 extension CastleDestination: VersionedPlugin {
     public static func version() -> String {
         return __destination_version
     }
 }
 
-// Example of what settings may look like.
+/// Settings
 private struct CastleSettings: Codable {
     let publishableKey: String
 }
@@ -134,16 +115,34 @@ private struct CastleSettings: Codable {
 // from Segment to the Partner SDK. These are only examples.
 private extension CastleDestination {
     
-    static var eventNameMap = ["ADD_TO_CART": "Product Added",
-                               "PRODUCT_TAPPED": "Product Tapped"]
-    
-    static var eventValueConversion: ((_ key: String, _ value: Any) -> Any) = { (key, value) in
-        if let valueString = value as? String {
-            return valueString
-                .replacingOccurrences(of: "-", with: "_")
-                .replacingOccurrences(of: " ", with: "_")
-        } else {
-            return value
+    func isValidProperty(property: Any) -> Bool {
+        // If the value if of any other type than NSNumber, NSString or NSNull: validation failed
+        if !(property is NSNumber ||
+             property is String ||
+             property is NSNull ||
+             property is [String: Any] ||
+             property is [Any])
+        {
+            analytics?.log(message: "Properties dictionary contains invalid data. Fount object with type: \(property)")
+            return false
         }
+        // No data in the traits dictionary was caught by the validation i.e. it's valid
+        return true
+    }
+    
+    func filteredProperties(properties: [String : Any]?) -> [AnyHashable : Any] {
+        // Check if dictionary is nil
+        guard let dictionary = properties else {
+            return [:]
+        }
+
+        var validProperties: [AnyHashable : Any] = [:]
+        for key in dictionary.keys {
+            guard let value = dictionary[key] else { continue }
+            if isValidProperty(property: value) {
+                validProperties[key] = value
+            }
+        }
+        return validProperties
     }
 }
